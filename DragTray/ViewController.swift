@@ -183,7 +183,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             },
             completion: { (done: Bool) -> Void in
                 self.isTrayOpen = true
-                dlog("trayView.center: \(self.trayView.center)")
+                dlog("trayView.center: \(self.trayView.center), topFrame: \(self.trayView.frame.origin.y)")
 
         })
     }
@@ -201,11 +201,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBAction func onFacePan(_ panGestureRecognizer: UIPanGestureRecognizer) {
         
         let locationInView = panGestureRecognizer.location(in: self.view)
+        // Gesture recognizers know the view they are attached to
+        let imageView = panGestureRecognizer.view as! UIImageView
         
         if panGestureRecognizer.state == .began {
         
-            // Gesture recognizers know the view they are attached to
-            let imageView = panGestureRecognizer.view as! UIImageView
             faceStartPoint = locationInView
             dlog("Gesture began \(imageView.tag), faceStart: \(faceStartPoint)")
             
@@ -239,6 +239,25 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 
         }
         else if panGestureRecognizer.state == .ended {
+            //470.5
+            
+            if (newlyCreatedFaceImageView.frame.origin.y + newlyCreatedFaceImageView.frame.width) >= 470.5 {
+                let options: UIViewAnimationOptions = .curveEaseInOut
+                
+                UIView.animate(withDuration: 0.5, delay: 0, options: options,
+                               animations: { () -> Void in
+                                //self.newlyCreatedFaceImageView.alpha = 0
+                                let origCenterPoint = CGPoint(x: imageView.center.x, y:imageView.center.y + self.trayView.frame.origin.y)
+                                self.newlyCreatedFaceImageView.center = origCenterPoint
+                                self.trayView.layoutIfNeeded()
+                    },
+                               completion: { (done: Bool) -> Void in
+                                self.newlyCreatedFaceImageView.removeFromSuperview()
+                })
+
+                
+            }
+            
             
         }
         else if panGestureRecognizer.state == .cancelled {
