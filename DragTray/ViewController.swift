@@ -31,12 +31,14 @@ func dlog(_ message: String, _ filePath: String = #file, _ functionName: String 
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var trayView: UIView!
+    @IBOutlet var trayArrowImageView: UIImageView!
     
-    var newlyCreatedFace: UIImageView!
+    var newlyCreatedFaceImageView: UIImageView!
     var startPoint: CGPoint = CGPoint(x: 0.0, y: 0.0)
     var faceStartPoint: CGPoint = CGPoint(x: 0.0, y: 0.0)
     var faceStartTransform: CGAffineTransform = CGAffineTransform.identity
     var faceStartRotationTransform: CGAffineTransform = CGAffineTransform.identity
+    var arrowStartRotationTransform: CGAffineTransform = CGAffineTransform.identity
     var trayCenterWhenOpen = CGPoint(x: 187.5, y: 570.0)
     var trayCenterWhenClosed = CGPoint(x: 187.5, y: 728.0)
     var isTrayOpen: Bool = true
@@ -44,12 +46,13 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        startPoint = self.trayView.center
-        dlog("startPoint: \(startPoint)")
+        
         self.trayView.center = self.trayCenterWhenClosed
+        self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: .pi)
         self.view.layoutIfNeeded()
         self.isTrayOpen = false
-        dlog("trayView.center: \(self.trayView.center)")
+        startPoint = self.trayView.center
+        dlog("startPoint trayView.center: \(self.trayView.center)")
     }
 
     override func didReceiveMemoryWarning() {
@@ -60,25 +63,81 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 
     //MARK: - Actions
     
+    func arrowRotationForTrayPan(translation: CGPoint, velocity: CGPoint) -> CGFloat {
+        
+        let angleWhenOpen: CGFloat = 0.0
+        let angleWhenClosed: CGFloat = .pi
+        var rotation: CGFloat  = 0.0
+        let isPanningUp = velocity.y < 0
+        
+        if isPanningUp {
+            
+            let newCenterY = startPoint.y - fabs(translation.y)
+            if newCenterY <= trayCenterWhenOpen.y {
+                rotation = angleWhenOpen
+            }
+            else {
+                let multiplier = 1.0 - (fabs(translation.y) / (trayCenterWhenClosed.y - trayCenterWhenOpen.y))
+                //dlog("mul: \(multiplier)")
+                rotation = angleWhenClosed * multiplier
+            }
+        }
+        else {
+            
+            let newCenterY = startPoint.y + fabs(translation.y)
+            if newCenterY >= trayCenterWhenClosed.y {
+                rotation = angleWhenClosed
+            }
+            else {
+                let multiplier = 1.0 - (fabs(translation.y) / (trayCenterWhenClosed.y - trayCenterWhenOpen.y))
+                //dlog("mul: \(multiplier)")
+                rotation = angleWhenClosed - (angleWhenClosed * multiplier)
+            }
+        }
+
+        return rotation
+    }
+    
     @IBAction func onTrayPan(_ panGestureRecognizer: UIPanGestureRecognizer) {
         
         // Absolute (x,y) coordinates in parent view (parentView should be
         // the parent view of the tray)
         let locationInView = panGestureRecognizer.location(in: self.view)
         let velocity = panGestureRecognizer.velocity(in: self.view)
-        
+        let translation = panGestureRecognizer.translation(in: self.view)
         let isPanningUp = velocity.y < 0
         
         
         if panGestureRecognizer.state == .began {
             dlog("Gesture began at: \(locationInView)")
             startPoint = self.trayView.center
+            arrowStartRotationTransform = trayArrowImageView.transform
         }
         else if panGestureRecognizer.state == .changed {
-            //dlog("Gesture changed at: \(locationInView)")
-            //trayView.center = CGPoint(x: startPoint.x, y: startPoint.y + locationInView.y)
             
-            //trayView.center = CGPoint(x: startPoint.x, y:locationInView.y)
+            if isPanningUp {
+                
+                let newCenterY = startPoint.y + translation.y
+                if newCenterY > trayCenterWhenOpen.y {
+                    self.trayView.center.y = newCenterY
+                }
+                dlog("Gesture changed up: \(translation.y), newCenterY: \(newCenterY)")
+                let rotation = arrowRotationForTrayPan(translation: translation, velocity: velocity)
+                self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: rotation)
+                
+            }
+            else {
+                let newCenterY = startPoint.y + translation.y
+                
+                if newCenterY < trayCenterWhenClosed.y {
+                    self.trayView.center.y = newCenterY
+                }
+                let rotation = arrowRotationForTrayPan(translation: translation, velocity: velocity)
+                self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: rotation)
+
+                dlog("Gesture changed down: \(translation.y), newCenterY: \(newCenterY)")
+            }
+            
         }
         else if panGestureRecognizer.state == .ended {
             dlog("Gesture ended at: \(locationInView), center: \(trayView.center)")
@@ -101,6 +160,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping:0.2, initialSpringVelocity:0.0, options: options,
             animations: { () -> Void in
                 self.trayView.center = self.trayCenterWhenClosed
+                self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: .pi)
                 self.view.layoutIfNeeded()
             },
             completion: { (done: Bool) -> Void in
@@ -118,6 +178,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         UIView.animate(withDuration: 0.3, delay: 0, options: options,
             animations: { () -> Void in
                 self.trayView.center = self.trayCenterWhenOpen
+                self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: 0.0)
                 self.view.layoutIfNeeded()
             },
             completion: { (done: Bool) -> Void in
@@ -149,32 +210,32 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             dlog("Gesture began \(imageView.tag), faceStart: \(faceStartPoint)")
             
             // Create a new image view that has the same image as the one currently panning
-            newlyCreatedFace = UIImageView(image: imageView.image)
-            newlyCreatedFace.isUserInteractionEnabled = true
+            newlyCreatedFaceImageView = UIImageView(image: imageView.image)
+            newlyCreatedFaceImageView.isUserInteractionEnabled = true
             let newFacePanner = UIPanGestureRecognizer(target: self, action: #selector(onNewFacePan(_:)))
-            newlyCreatedFace.addGestureRecognizer(newFacePanner)
+            newlyCreatedFaceImageView.addGestureRecognizer(newFacePanner)
             
             let newFacePincher = UIPinchGestureRecognizer(target: self, action: #selector(onNewFacePinch(_:)))
-            newlyCreatedFace.addGestureRecognizer(newFacePincher)
+            newlyCreatedFaceImageView.addGestureRecognizer(newFacePincher)
             newFacePincher.delegate = self
             
             let newFaceRotater = UIRotationGestureRecognizer(target: self, action: #selector(onNewFaceRotate(_:)))
-            newlyCreatedFace.addGestureRecognizer(newFaceRotater)
+            newlyCreatedFaceImageView.addGestureRecognizer(newFaceRotater)
             newFaceRotater.delegate = self
             
             // Add the new face to the tray's parent view.
-            view.addSubview(newlyCreatedFace)
+            view.addSubview(newlyCreatedFaceImageView)
             
             // Initialize the position of the new face.
-            newlyCreatedFace.center = imageView.center
+            newlyCreatedFaceImageView.center = imageView.center
             
             // Since the original face is in the tray, but the new face is in the
             // main view, you have to offset the coordinates
-            newlyCreatedFace.center.y += trayView.frame.origin.y
+            newlyCreatedFaceImageView.center.y += trayView.frame.origin.y
         }
         else if panGestureRecognizer.state == .changed {
-            newlyCreatedFace.center = locationInView
-            dlog("Gesture changed \(newlyCreatedFace.center), faceStart: \(locationInView)")
+            newlyCreatedFaceImageView.center = locationInView
+            dlog("Gesture changed \(newlyCreatedFaceImageView.center), faceStart: \(locationInView)")
 
         }
         else if panGestureRecognizer.state == .ended {
