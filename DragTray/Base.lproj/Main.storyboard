@@ -18,58 +18,70 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Os2-Nu-w1H" userLabel="TrayView">
-                                <frame key="frameInset" minY="464" width="375" height="199"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Os2-Nu-w1H" userLabel="TrayView">
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="down_arrow" translatesAutoresizingMaskIntoConstraints="NO" id="KLH-GU-LtK" userLabel="arrow">
-                                        <frame key="frameInset" minX="161" minY="8" width="20" height="14"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="down_arrow" translatesAutoresizingMaskIntoConstraints="NO" id="KLH-GU-LtK" userLabel="arrow">
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="20" id="iHd-uM-Eja"/>
+                                            <constraint firstAttribute="height" constant="14" id="oKO-d3-NkF"/>
+                                        </constraints>
                                     </imageView>
-                                    <imageView tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="wink" translatesAutoresizingMaskIntoConstraints="NO" id="amT-uR-PId">
-                                        <frame key="frameInset" minX="16" minY="42" width="60" height="60"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <imageView tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wink" translatesAutoresizingMaskIntoConstraints="NO" id="amT-uR-PId">
                                         <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="60" id="HAU-dx-Gre"/>
+                                            <constraint firstAttribute="height" constant="60" id="eec-TG-JDM"/>
+                                        </constraints>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="8tl-Y2-0UD" appends="YES" id="RQj-jx-w39"/>
                                         </connections>
                                     </imageView>
-                                    <imageView tag="2" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="dead" translatesAutoresizingMaskIntoConstraints="NO" id="Edt-Mh-Adm">
-                                        <frame key="frameInset" minX="141" minY="42" width="60" height="60"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <imageView tag="2" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dead" translatesAutoresizingMaskIntoConstraints="NO" id="Edt-Mh-Adm">
                                         <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="60" id="Ltc-Lp-VGh"/>
+                                            <constraint firstAttribute="height" constant="60" id="zKG-E5-vuL"/>
+                                        </constraints>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="RXd-um-7kc" appends="YES" id="7B3-Yn-MVz"/>
                                         </connections>
                                     </imageView>
-                                    <imageView tag="3" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="happy" translatesAutoresizingMaskIntoConstraints="NO" id="4Ma-fL-SI7">
-                                        <frame key="frameInset" minX="257" minY="42" width="60" height="60"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <imageView tag="3" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="happy" translatesAutoresizingMaskIntoConstraints="NO" id="4Ma-fL-SI7">
                                         <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="60" id="LR9-h5-9Ow"/>
+                                            <constraint firstAttribute="width" constant="60" id="dEC-h3-a8m"/>
+                                        </constraints>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="KCK-r8-NTi" appends="YES" id="PKp-eE-9cd"/>
                                         </connections>
                                     </imageView>
-                                    <imageView tag="4" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="sad" translatesAutoresizingMaskIntoConstraints="NO" id="zdX-w5-EjV">
-                                        <frame key="frameInset" minX="21" minY="118" width="60" height="60"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <imageView tag="4" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sad" translatesAutoresizingMaskIntoConstraints="NO" id="zdX-w5-EjV">
                                         <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="60" id="9Uh-en-yZj"/>
+                                            <constraint firstAttribute="height" constant="60" id="CyU-Bm-l0X"/>
+                                        </constraints>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="V82-SQ-0fd" appends="YES" id="Fm8-kT-EIl"/>
                                         </connections>
                                     </imageView>
-                                    <imageView tag="5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="tongue" translatesAutoresizingMaskIntoConstraints="NO" id="KUL-s9-jkY">
-                                        <frame key="frameInset" minX="146" minY="118" width="60" height="60"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <imageView tag="5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tongue" translatesAutoresizingMaskIntoConstraints="NO" id="KUL-s9-jkY">
                                         <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="60" id="kjn-ug-FuV"/>
+                                            <constraint firstAttribute="height" constant="60" id="xXp-ng-l4a"/>
+                                        </constraints>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="hw2-Mp-cvW" appends="YES" id="8Rd-d7-TTN"/>
                                         </connections>
                                     </imageView>
-                                    <imageView tag="6" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="excited" translatesAutoresizingMaskIntoConstraints="NO" id="iOf-TI-PZq">
-                                        <frame key="frameInset" minX="262" minY="118" width="60" height="60"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <imageView tag="6" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="excited" translatesAutoresizingMaskIntoConstraints="NO" id="iOf-TI-PZq">
                                         <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="60" id="1gA-yS-wkk"/>
+                                            <constraint firstAttribute="height" constant="60" id="Fl2-sB-7p9"/>
+                                        </constraints>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="4Ph-eR-l0Q" appends="YES" id="Duf-Dh-t63"/>
                                         </connections>
@@ -77,6 +89,23 @@
                                 </subviews>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="2p4-Hj-R1X"/>
+                                    <constraint firstItem="KUL-s9-jkY" firstAttribute="centerX" secondItem="Os2-Nu-w1H" secondAttribute="centerX" id="9bO-xy-tLE"/>
+                                    <constraint firstItem="KLH-GU-LtK" firstAttribute="top" secondItem="Os2-Nu-w1H" secondAttribute="top" constant="8" id="BhV-bt-QiC"/>
+                                    <constraint firstAttribute="trailing" secondItem="iOf-TI-PZq" secondAttribute="trailing" constant="16" id="G8Q-qK-oxS"/>
+                                    <constraint firstAttribute="bottom" secondItem="KUL-s9-jkY" secondAttribute="bottom" constant="12" id="IPw-HT-gLo"/>
+                                    <constraint firstAttribute="trailing" secondItem="4Ma-fL-SI7" secondAttribute="trailing" constant="16" id="PAy-MZ-RwT"/>
+                                    <constraint firstItem="Edt-Mh-Adm" firstAttribute="centerX" secondItem="Os2-Nu-w1H" secondAttribute="centerX" id="WuB-yL-9Zg"/>
+                                    <constraint firstAttribute="bottom" secondItem="zdX-w5-EjV" secondAttribute="bottom" constant="12" id="XJT-bD-dUt"/>
+                                    <constraint firstAttribute="bottom" secondItem="iOf-TI-PZq" secondAttribute="bottom" constant="12" id="cIw-Sr-vmz"/>
+                                    <constraint firstItem="amT-uR-PId" firstAttribute="leading" secondItem="Os2-Nu-w1H" secondAttribute="leading" constant="16" id="ePL-cz-fRI"/>
+                                    <constraint firstItem="zdX-w5-EjV" firstAttribute="leading" secondItem="Os2-Nu-w1H" secondAttribute="leading" constant="16" id="onx-IH-05T"/>
+                                    <constraint firstItem="KLH-GU-LtK" firstAttribute="centerX" secondItem="Os2-Nu-w1H" secondAttribute="centerX" id="ooi-66-Jpi"/>
+                                    <constraint firstItem="4Ma-fL-SI7" firstAttribute="top" secondItem="Os2-Nu-w1H" secondAttribute="top" constant="48" id="pz3-ny-qpY"/>
+                                    <constraint firstItem="Edt-Mh-Adm" firstAttribute="top" secondItem="Os2-Nu-w1H" secondAttribute="top" constant="48" id="ysA-zp-zDE"/>
+                                    <constraint firstItem="amT-uR-PId" firstAttribute="top" secondItem="Os2-Nu-w1H" secondAttribute="top" constant="48" id="ztb-K8-nBf"/>
+                                </constraints>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="A03-ky-p6Z" appends="YES" id="tnT-Nz-fVS"/>
                                     <outletCollection property="gestureRecognizers" destination="Ckd-Vo-uCT" appends="YES" id="MoO-sc-geO"/>
@@ -84,10 +113,16 @@
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Os2-Nu-w1H" secondAttribute="trailing" id="nNP-fJ-c33"/>
+                            <constraint firstItem="Lfk-a7-u53" firstAttribute="top" secondItem="Os2-Nu-w1H" secondAttribute="bottom" id="wha-hj-a12"/>
+                            <constraint firstItem="Os2-Nu-w1H" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="zSj-lc-gtM"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="trayArrowImageView" destination="KLH-GU-LtK" id="VSO-Nb-Yeq"/>
                         <outlet property="trayView" destination="Os2-Nu-w1H" id="TZC-NF-Ks9"/>
+                        <outlet property="trayViewBottomConstraint" destination="wha-hj-a12" id="07h-t7-QHV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

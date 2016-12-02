@@ -32,6 +32,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var trayView: UIView!
     @IBOutlet var trayArrowImageView: UIImageView!
+    @IBOutlet weak var trayViewBottomConstraint: NSLayoutConstraint!
     
     var newlyCreatedFaceImageView: UIImageView!
     var startPoint: CGPoint = CGPoint(x: 0.0, y: 0.0)
@@ -42,17 +43,32 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var trayCenterWhenOpen = CGPoint(x: 187.5, y: 570.0)
     var trayCenterWhenClosed = CGPoint(x: 187.5, y: 728.0)
     var isTrayOpen: Bool = true
+    let trayClosedPeekOut: CGFloat = 30.0
+    var trayTravelDiff:CGFloat = 0.0
+    var bottomConstraintStartY: CGFloat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
         self.trayView.center = self.trayCenterWhenClosed
-        self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: .pi)
+        //self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: .pi)
         self.view.layoutIfNeeded()
-        self.isTrayOpen = false
+        self.isTrayOpen = true
         startPoint = self.trayView.center
         dlog("startPoint trayView.center: \(self.trayView.center)")
+        
+        //let diff = trayCenterWhenClosed.y - trayCenterWhenOpen.y
+        //dlog("closedCenterY - openCenterY: \(diff)")
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        trayTravelDiff = trayView.frame.size.height - trayClosedPeekOut
+        dlog("trayTravelDiff: \(trayTravelDiff)")
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -77,7 +93,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 rotation = angleWhenOpen
             }
             else {
-                let multiplier = 1.0 - (fabs(translation.y) / (trayCenterWhenClosed.y - trayCenterWhenOpen.y))
+                let multiplier = 1.0 - (fabs(translation.y) / (trayTravelDiff))
                 //dlog("mul: \(multiplier)")
                 rotation = angleWhenClosed * multiplier
             }
@@ -89,7 +105,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 rotation = angleWhenClosed
             }
             else {
-                let multiplier = 1.0 - (fabs(translation.y) / (trayCenterWhenClosed.y - trayCenterWhenOpen.y))
+                let multiplier = 1.0 - (fabs(translation.y) / (trayTravelDiff))
                 //dlog("mul: \(multiplier)")
                 rotation = angleWhenClosed - (angleWhenClosed * multiplier)
             }
@@ -109,33 +125,23 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         
         if panGestureRecognizer.state == .began {
-            dlog("Gesture began at: \(locationInView)")
             startPoint = self.trayView.center
+            bottomConstraintStartY = self.trayViewBottomConstraint.constant
             arrowStartRotationTransform = trayArrowImageView.transform
+            
+            dlog("Gesture began at: \(locationInView), startConstraintY: \(bottomConstraintStartY)")
+
         }
         else if panGestureRecognizer.state == .changed {
             
-            if isPanningUp {
+            
+            let newBottomConstraintY = bottomConstraintStartY - translation.y
+            if newBottomConstraintY <= 0 && newBottomConstraintY >= -self.trayTravelDiff  {
+                self.trayViewBottomConstraint.constant = newBottomConstraintY
                 
-                let newCenterY = startPoint.y + translation.y
-                if newCenterY > trayCenterWhenOpen.y {
-                    self.trayView.center.y = newCenterY
-                }
-                dlog("Gesture changed up: \(translation.y), newCenterY: \(newCenterY)")
                 let rotation = arrowRotationForTrayPan(translation: translation, velocity: velocity)
                 self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: rotation)
-                
-            }
-            else {
-                let newCenterY = startPoint.y + translation.y
-                
-                if newCenterY < trayCenterWhenClosed.y {
-                    self.trayView.center.y = newCenterY
-                }
-                let rotation = arrowRotationForTrayPan(translation: translation, velocity: velocity)
-                self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: rotation)
-
-                dlog("Gesture changed down: \(translation.y), newCenterY: \(newCenterY)")
+                dlog("Gesture change at: \(locationInView), newConstraintY: \(newBottomConstraintY)")
             }
             
         }
@@ -159,7 +165,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping:0.2, initialSpringVelocity:0.0, options: options,
             animations: { () -> Void in
-                self.trayView.center = self.trayCenterWhenClosed
+                //self.trayView.center = self.trayCenterWhenClosed
+                self.trayViewBottomConstraint.constant = (-self.trayView.frame.height + self.trayClosedPeekOut)
                 self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: .pi)
                 self.view.layoutIfNeeded()
             },
@@ -177,7 +184,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         UIView.animate(withDuration: 0.3, delay: 0, options: options,
             animations: { () -> Void in
-                self.trayView.center = self.trayCenterWhenOpen
+                //self.trayView.center = self.trayCenterWhenOpen
+                self.trayViewBottomConstraint.constant = 0
                 self.trayArrowImageView.transform = CGAffineTransform(rotationAngle: 0.0)
                 self.view.layoutIfNeeded()
             },
@@ -222,6 +230,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             let newFaceRotater = UIRotationGestureRecognizer(target: self, action: #selector(onNewFaceRotate(_:)))
             newlyCreatedFaceImageView.addGestureRecognizer(newFaceRotater)
             newFaceRotater.delegate = self
+            
+            let newFaceTapper = UITapGestureRecognizer(target: self, action: #selector(onNewFaceTap(_:)))
+            newFaceTapper.numberOfTapsRequired = 2
+            newlyCreatedFaceImageView.addGestureRecognizer(newFaceTapper)
+
             
             // Add the new face to the tray's parent view.
             view.addSubview(newlyCreatedFaceImageView)
@@ -367,10 +380,31 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         
     }
+    
+    @IBAction func onNewFaceTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
+        
+        if tapGestureRecognizer.state == .ended {
+            dlog("Gesture tap ended")
+            
+            if let v = tapGestureRecognizer.view {
+            
+            let options: UIViewAnimationOptions = .curveEaseInOut
+            
+            UIView.animate(withDuration: 0.5, delay: 0, options: options,
+                           animations: { () -> Void in
+                            v.alpha = 0
+                            self.view.layoutIfNeeded()
+                },
+                           completion: { (done: Bool) -> Void in
+                            v.removeFromSuperview()
+            })
 
+            }
+        }
+    }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        dlog("g1: \(gestureRecognizer), g2: \(otherGestureRecognizer)")
+        //dlog("g1: \(gestureRecognizer), g2: \(otherGestureRecognizer)")
         return true
     }
 }
